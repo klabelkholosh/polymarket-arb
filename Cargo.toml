@@ -1,0 +1,70 @@
+[package]
+name = "polymarket_arb"
+version = "0.1.0"
+edition = "2021"
+description = "High-performance Polymarket arbitrage trading bot"
+
+[dependencies]
+# Async runtime - tokio is the fastest
+tokio = { version = "1.35", features = ["full", "rt-multi-thread"] }
+
+# HTTP client with connection pooling
+reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }
+
+# WebSocket for real-time data
+tokio-tungstenite = { version = "0.21", features = ["rustls-tls-native-roots"] }
+futures-util = "0.3"
+
+# JSON serialization (simd-json for speed)
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Ethereum signing with alloy (used by Polymarket SDK)
+alloy = { version = "1.2", features = ["signers", "signer-local"] }
+
+# Official Polymarket CLOB client SDK
+polymarket-client-sdk = { git = "https://github.com/Polymarket/rs-clob-client.git" }
+
+# Decimal arithmetic for precise money handling
+rust_decimal = { version = "1.33", features = ["serde"] }
+
+# Environment config
+dotenvy = "0.15"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# UUID for order IDs
+uuid = { version = "1.6", features = ["v4"] }
+
+# Concurrent data structures
+dashmap = "5.5"
+parking_lot = "0.12"
+
+# Cryptography
+hmac = "0.12"
+sha2 = "0.10"
+base64 = "0.21"
+hex = "0.4"
+
+# Retry logic
+backoff = { version = "0.4", features = ["tokio"] }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.release-fast]
+inherits = "release"
+target-cpu = "native"
